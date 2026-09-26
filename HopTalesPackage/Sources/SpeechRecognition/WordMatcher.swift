@@ -24,8 +24,9 @@ public enum WordMatcher {
 
   static let soundsAlike: [String: Set<String>] = [
     "the": ["a", "uh", "duh", "da", "de", "dee", "thee", "thuh", "they", "then"],
-    "a": ["ay", "ah", "eh", "uh", "ea", "ear", "eara", "era", "hey"],
-    "bee": ["be", "bea"]
+    "a": ["ay", "ah", "eh", "uh", "ea", "ear", "eara", "era", "hey", "oh", "o"],
+    "bee": ["be", "bea"],
+    "on": ["oh", "awn", "ahn", "own"]
   ]
 
   static let letterNames: [String: Set<String>] = [
@@ -93,17 +94,21 @@ public enum WordMatcher {
     if text.count >= 4, levenshtein(token, text) <= 1 { return true }
     guard strictness == .gentle else { return false }
 
-    if token.count == text.count, token.prefix(2) == text.prefix(2) { return true }
+    let squeezed = collapsed(token)
+    for heard in Set([token, squeezed]) where heard.count == text.count {
+      if heard.prefix(2) == text.prefix(2) { return true }
+    }
     if target.homophones.contains(where: { $0.lowercased() == token }) { return true }
     if soundsAlike[text]?.contains(token) == true { return true }
     if soundsAlike[text]?.contains(collapsed(token)) == true { return true }
-    return soundsLikeShortWord(token, text)
+    return soundsLikeShortWord(token, text) || soundsLikeShortWord(squeezed, text)
   }
 
   static func soundsLikeShortWord(_ token: String, _ text: String) -> Bool {
     let target = Array(text), heard = Array(token)
+    let opens = target.first == "y" || target.first.map { !vowels.contains($0) } == true
     guard
-      target.count == 3, !vowels.contains(target[0]), vowels.contains(target[1]),
+      target.count == 3, opens, vowels.contains(target[1]),
       !vowels.contains(target[2]), (3...4).contains(heard.count),
       let first = heard.first, let last = heard.last, first == target[0],
       last == target[2] || last == voicing[target[2]]
