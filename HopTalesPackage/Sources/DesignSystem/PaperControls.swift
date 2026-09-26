@@ -31,6 +31,26 @@ extension ButtonStyle where Self == PaperButtonStyle {
   public static var paper: PaperButtonStyle { PaperButtonStyle() }
 }
 
+public struct PaperQuietButtonStyle: ButtonStyle {
+  public init() {}
+
+  public func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .font(Typography.ui(18, weight: .semibold))
+      .foregroundStyle(Paper.ink)
+      .padding(.horizontal, 28)
+      .frame(maxWidth: .infinity)
+      .frame(height: 56)
+      .paperChip(RoundedRectangle(cornerRadius: 28, style: .circular), rim: 4)
+      .scaleEffect(configuration.isPressed ? 0.97 : 1)
+      .animation(.easeOut(duration: 0.12), value: configuration.isPressed)
+  }
+}
+
+extension ButtonStyle where Self == PaperQuietButtonStyle {
+  public static var paperQuiet: PaperQuietButtonStyle { PaperQuietButtonStyle() }
+}
+
 public struct PaperChipButtonStyle: ButtonStyle {
   public init() {}
 

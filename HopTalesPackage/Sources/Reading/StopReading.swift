@@ -1,11 +1,9 @@
 import Content
 import DesignSystem
 import SwiftUI
-import World
 
 struct StopReading: View {
   let friend: Friend
-  let outfit: [WardrobeItem]
   let keepReading: () -> Void
   let stop: () -> Void
 
@@ -16,8 +14,6 @@ struct StopReading: View {
         .onTapGesture(perform: keepReading)
         .accessibilityHidden(true)
       VStack(spacing: 14) {
-        DressedFriend(friend, wearing: outfit, height: 110)
-          .shadow(color: Paper.shadow, radius: 4, y: 3)
         PaperLabel(seed: 23) {
           Text("Stop reading?")
             .font(Typography.display(26))
@@ -36,13 +32,14 @@ struct StopReading: View {
           Label("Keep reading", systemImage: "book.fill")
         }
         .buttonStyle(.paper)
-        .padding(.top, 4)
+        .padding(.top, 6)
         Button(action: stop) {
           Label("Back to stories", systemImage: "house.fill")
         }
-        .buttonStyle(.paperChip)
+        .buttonStyle(.paperQuiet)
       }
-      .padding(24)
+      .padding(.horizontal, 24)
+      .padding(.vertical, 28)
       .frame(maxWidth: 340)
       .background {
         Deckle(seed: 31, jitter: 3, step: 12)
@@ -61,7 +58,7 @@ struct StopReadingPreview: View {
   var body: some View {
     ZStack {
       Color(hex: 0x8FCB6B)
-      StopReading(friend: .bunny, outfit: []) {} stop: {}
+      StopReading(friend: .bunny) {} stop: {}
     }
     .frame(width: Metrics.phone.reference.width, height: Metrics.phone.reference.height)
   }

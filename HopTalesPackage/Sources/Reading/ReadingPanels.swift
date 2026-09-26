@@ -17,7 +17,7 @@ struct ReadingPanels: ViewModifier {
       }
       .overlay {
         if store.isConfirmingStop {
-          StopReading(friend: store.friend, outfit: store.outfit) {
+          StopReading(friend: store.friend) {
             store.send(.keepReadingTapped)
           } stop: {
             store.send(.backToStoriesTapped)
